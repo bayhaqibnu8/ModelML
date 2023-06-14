@@ -1,31 +1,45 @@
 from flask import Flask, request, jsonify
+import cv2
+import numpy as np
 import tensorflow as tf
 
 app = Flask(__name__)
 
-# Load model kalian disini seperti pada kasus ini menggunakan model linear
-model = tf.keras.models.load_model('linear.h5')
+# Load the TensorFlow model
+model = tf.keras.models.load_model("model.h5")
 
-@app.route('/', methods=['GET'])
-def home():
-    return "API is running!"
+# Define the endpoint for face prediction
+@app.route('/predict_face', methods=['POST'])
+def predict_face():
+    # Get the image file from the request
+    image_file = request.files['image']
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    # Get the input data from the request
-    data = request.get_json()
+    # Read the image using OpenCV
+    image = cv2.imdecode(np.frombuffer(image_file.read(), np.uint8), cv2.IMREAD_COLOR)
 
-    # Lakukan Preprocess data terlebih dahulu jika ada
-    data_predict = int(data["data"])
-
-    # Make predictions using the loaded model
-    predictions = model.predict([[data_predict]])
-
-    # Lakukan Postprocess data terlebih dahulu jika ada
+    # Preprocess the image (e.g., resize, normalize, etc.)
     # ...
 
-    # Return the predictions as a JSON response
-    return jsonify(predictions.item())
+    # Perform face prediction using the loaded model
+    predictions = model.predict(np.array([image]))
+    
+    # Find the index with the highest probability
+    max_index = np.argmax(predictions)
+
+    # Get the class label associated with the index
+    class_labels = ['Heart', 'Oblong', 'Oval', 'Round', 'Square']
+    predicted_class = class_labels[max_index]
+
+    # Process the predictions and prepare the response
+    # ...
+    response = {
+        'predicted_class': predicted_class,
+        'probabilities': predictions.tolist()[0]  # Convert numpy array to a list
+    }
+
+    # Return the response as JSON
+    return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8080)
+    # Start the Flask application
+    app.run()aa
