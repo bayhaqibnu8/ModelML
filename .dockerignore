@@ -5,4 +5,3 @@ readme.md
 *.pyd
 __pycache__
 .pytest_cache
-tutor
