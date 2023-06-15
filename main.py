@@ -1,12 +1,14 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 import tensorflow as tf
 import tensorflow_hub as hub
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.applications.resnet50 import preprocess_input
-from flask import Flask, request, jsonify
 import cv2
 import numpy as np
 
 app = Flask(__name__)
+CORS(app)  # Mengizinkan akses lintas domain untuk semua rute
 
 # Define the endpoint for face prediction
 @app.route('/predict_face', methods=['POST'])

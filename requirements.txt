@@ -1,7 +1,7 @@
-Flask
+Flask==2.2.2
+tensorflow==2.12.0
+tensorflow_hub==0.13.0
+gunicorn==20.1.0
+flask-cors==3.0.10
 opencv-python
 numpy
-tensorflow
-tensorflow_hub
-keras
-gunicorn
